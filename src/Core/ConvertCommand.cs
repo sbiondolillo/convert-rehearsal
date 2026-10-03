@@ -63,7 +63,18 @@ public static class ConvertCommand
 
         if (answer.Rate is decimal rate)
         {
-            await output.WriteLineAsync($"{RateClient.Format(amount * rate)} {to}").ConfigureAwait(false);
+            decimal converted;
+            try
+            {
+                converted = checked(amount * rate);
+            }
+            catch (OverflowException)
+            {
+                await error.WriteLineAsync("The converted amount is too large to be handled.").ConfigureAwait(false);
+                return 2;
+            }
+
+            await output.WriteLineAsync($"{RateClient.Format(converted)} {to}").ConfigureAwait(false);
             return 0;
         }
 

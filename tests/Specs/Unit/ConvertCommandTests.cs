@@ -63,6 +63,15 @@ public sealed class ConvertCommandTests
     }
 
     [Fact]
+    public async Task OverflowingAmountIsReportedWithExitCodeTwo()
+    {
+        var r = await RunAsync(["79228162514264337593543950335", "USD", "EUR"], "secret", h => h.Respond(HttpStatusCode.OK, """{"result":"success","conversion_rate":2}"""));
+        Assert.Equal(2, r.Code);
+        Assert.Equal("", r.Out);
+        Assert.Contains("too large", r.Err, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ErrorAnswerWithoutErrorTypeIsReported()
     {
         var r = await RunAsync(["10", "USD", "EUR"], "secret", h => h.Respond(HttpStatusCode.Forbidden, """{"result":"error"}"""));
