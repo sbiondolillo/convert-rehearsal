@@ -38,5 +38,5 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Integration suite
         env:
-          EXAMPLE_API_KEY: ${{ secrets.EXAMPLE_API_KEY }}
+          EXCHANGERATE_API_KEY: ${{ secrets.EXCHANGERATE_API_KEY }}
         run: dotnet run --no-restore --project tests/Integration
