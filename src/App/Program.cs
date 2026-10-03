@@ -1,8 +1,4 @@
 using Core;
-using Microsoft.Extensions.Hosting;
-using System.CommandLine;
 
-using IHost host = Host.CreateApplicationBuilder().Build();
-RootCommand root = GreetCommand.Create();
-ParseResult parse = root.Parse(args);
-return await parse.InvokeAsync().ConfigureAwait(false);
+using HttpClient http = new() { Timeout = TimeSpan.FromSeconds(30) };
+return await ConvertCommand.RunAsync(args, Environment.GetEnvironmentVariable, http, Console.Out, Console.Error).ConfigureAwait(false);
