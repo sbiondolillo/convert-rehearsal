@@ -53,7 +53,18 @@ public static class ConvertCommand
                 return 1;
             }
 
-            await result.InvocationConfiguration.Output.WriteLineAsync(Format(result.GetRequiredValue(amount), rate, toCode)).ConfigureAwait(false);
+            string line;
+            try
+            {
+                line = Format(result.GetRequiredValue(amount), rate, toCode);
+            }
+            catch (OverflowException)
+            {
+                await error.WriteLineAsync("The converted amount is too large.").ConfigureAwait(false);
+                return 1;
+            }
+
+            await result.InvocationConfiguration.Output.WriteLineAsync(line).ConfigureAwait(false);
             return 0;
         });
         return root;

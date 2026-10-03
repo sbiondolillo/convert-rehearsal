@@ -40,4 +40,19 @@ public sealed class ExchangeRateClientTests
         Assert.Null(outcome.Rate);
         Assert.Contains("no answer", outcome.Error, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public async Task AResilienceTimeoutCountsAsNoAnswer()
+    {
+        using var http = new HttpClient(new ThrowingHandler());
+        RateOutcome outcome = await new ExchangeRateClient(http).GetRateAsync("key", "USD", "EUR", CancellationToken.None);
+        Assert.Null(outcome.Rate);
+        Assert.Contains("no answer", outcome.Error, StringComparison.Ordinal);
+    }
+
+    private sealed class ThrowingHandler : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            throw new Polly.Timeout.TimeoutRejectedException("timeout");
+    }
 }

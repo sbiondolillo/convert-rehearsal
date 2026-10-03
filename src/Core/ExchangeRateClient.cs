@@ -27,7 +27,7 @@ public sealed class ExchangeRateClient(HttpClient http)
             string body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             return ParseAnswer(body, from, to);
         }
-        catch (Exception ex) when (ex is HttpRequestException or TimeoutException
+        catch (Exception ex) when (ex is HttpRequestException or TimeoutException or Polly.Timeout.TimeoutRejectedException
             || (ex is OperationCanceledException && !cancellationToken.IsCancellationRequested))
         {
             return new RateOutcome(null, NoAnswer);
