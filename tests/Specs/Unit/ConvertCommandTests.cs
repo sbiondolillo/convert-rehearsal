@@ -108,4 +108,23 @@ public sealed class ConvertCommandTests
         Assert.NotEmpty(r.Error);
         Assert.Equal("", r.Output);
     }
+
+    [Fact]
+    public async Task AnOverflowingProductIsAControlledFailure()
+    {
+        string max = decimal.MaxValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        RunResult r = await Runner.RunAsync(StubHandler.Rate("2"), "k", max, "USD", "EUR");
+        Assert.Equal(1, r.ExitCode);
+        Assert.Contains("too large", r.Error, StringComparison.Ordinal);
+        Assert.Equal("", r.Output);
+    }
+
+    [Fact]
+    public async Task AnHttpErrorWithAnUnusableBodyIsNotReportedAsNoAnswer()
+    {
+        RunResult r = await Runner.RunAsync(StubHandler.Json(HttpStatusCode.BadGateway, "<html>"), "k", "10", "USD", "EUR");
+        Assert.Equal(1, r.ExitCode);
+        Assert.Contains("does not understand", r.Error, StringComparison.Ordinal);
+        Assert.DoesNotContain("no answer", r.Error, StringComparison.Ordinal);
+    }
 }

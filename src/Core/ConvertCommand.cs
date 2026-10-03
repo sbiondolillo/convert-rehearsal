@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Net;
 using System.Text.Json;
 using System.CommandLine;
 
@@ -81,11 +80,9 @@ public static class ConvertCommand
         var uri = new Uri($"https://v6.exchangerate-api.com/v6/{Uri.EscapeDataString(key)}/pair/{from}/{to}");
 
         string body;
-        HttpStatusCode status;
         try
         {
             using HttpResponseMessage response = await http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-            status = response.StatusCode;
             body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException && !cancellationToken.IsCancellationRequested)
@@ -107,15 +104,21 @@ public static class ConvertCommand
         if (result == "success" && rate is > 0)
         {
             // Away from zero is the usual rounding of money.
-            decimal converted = Math.Round(amount * rate.Value, 2, MidpointRounding.AwayFromZero);
+            decimal converted;
+            try
+            {
+                converted = Math.Round(amount * rate.Value, 2, MidpointRounding.AwayFromZero);
+            }
+            catch (OverflowException)
+            {
+                return await FailAsync(error, "The converted amount is too large.").ConfigureAwait(false);
+            }
+
             await output.WriteLineAsync(string.Create(CultureInfo.InvariantCulture, $"{converted:F2} {to}")).ConfigureAwait(false);
             return 0;
         }
 
-        string fallback = (int)status >= 400
-            ? "The service gave no answer."
-            : "The service gave an answer that the program does not understand.";
-        return await FailAsync(error, fallback).ConfigureAwait(false);
+        return await FailAsync(error, "The service gave an answer that the program does not understand.").ConfigureAwait(false);
     }
 
     private static bool IsCode(string text) => text.Length > 0 && text.All(char.IsAsciiLetter);
