@@ -87,4 +87,37 @@ public sealed class ConversionTests
         Assert.NotEqual("", error.ToString());
         Assert.DoesNotContain(key, error.ToString());
     }
+
+    [Fact]
+    public async Task RealProgramHidesAnUnknownKey()
+    {
+        const string key = "unknown-key-for-test";
+        TextWriter oldOut = Console.Out;
+        TextWriter oldError = Console.Error;
+        string? oldKey = Environment.GetEnvironmentVariable(CurrencyConverter.KeyVariable);
+        using var console = new StringWriter();
+        using var output = new StringWriter();
+        using var error = new StringWriter();
+        int code;
+        try
+        {
+            Console.SetOut(console);
+            Console.SetError(console);
+            Environment.SetEnvironmentVariable(CurrencyConverter.KeyVariable, key);
+            code = await ConsoleHost.RunAsync(["10", "USD", "EUR"], null, new InvocationConfiguration { Output = output, Error = error });
+        }
+        finally
+        {
+            Console.SetOut(oldOut);
+            Console.SetError(oldError);
+            Environment.SetEnvironmentVariable(CurrencyConverter.KeyVariable, oldKey);
+        }
+
+        Assert.Equal(1, code);
+        Assert.Equal("", output.ToString());
+        Assert.NotEqual("", error.ToString());
+        Assert.DoesNotContain(key, error.ToString());
+        Assert.DoesNotContain(key, output.ToString());
+        Assert.Equal("", console.ToString());
+    }
 }
