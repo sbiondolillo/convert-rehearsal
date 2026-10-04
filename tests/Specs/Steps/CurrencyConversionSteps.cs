@@ -67,7 +67,7 @@ public sealed class CurrencyConversionSteps : IDisposable
     public void ThenTheProgramSentNoRequest() => Assert.Empty(_requests);
 
     [Then("standard output is {string}")]
-    public void ThenOutputIs(string expected) => Assert.Equal(expected, _output.ToString().TrimEnd('\n'));
+    public void ThenOutputIs(string expected) => Assert.Equal(expected, _output.ToString().TrimEnd('\r', '\n'));
 
     [Then("standard output is empty")]
     public void ThenOutputIsEmpty() => Assert.Equal("", _output.ToString());

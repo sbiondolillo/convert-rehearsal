@@ -50,7 +50,14 @@ public sealed class CurrencyConverter(HttpClient http, string key)
             string? result = root.TryGetProperty("result", out JsonElement resultElement) ? resultElement.GetString() : null;
             if (result is "success" && root.TryGetProperty("conversion_rate", out JsonElement rate) && rate.TryGetDecimal(out decimal value))
             {
-                return ConversionResult.Success(amount * value);
+                try
+                {
+                    return ConversionResult.Success(amount * value);
+                }
+                catch (OverflowException)
+                {
+                    return ConversionResult.Failure("The converted amount is out of range.");
+                }
             }
 
             if (result is "error" && root.TryGetProperty("error-type", out JsonElement type) && type.GetString() is string errorType)

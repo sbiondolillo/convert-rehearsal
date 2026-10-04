@@ -38,6 +38,14 @@ public sealed class CurrencyConverterTests
     }
 
     [Fact]
+    public void ParseFailsWhenTheProductExceedsDecimal()
+    {
+        ConversionResult result = CurrencyConverter.Parse("""{"result":"success","conversion_rate":157.8014}""", decimal.MaxValue, "USD", "JPY");
+        Assert.Null(result.Amount);
+        Assert.Contains("out of range", result.Error);
+    }
+
+    [Fact]
     public void ParseNamesBothCodesOnUnsupportedCode()
     {
         ConversionResult result = CurrencyConverter.Parse("""{"result":"error","error-type":"unsupported-code"}""", 1m, "USD", "ZZZ");
