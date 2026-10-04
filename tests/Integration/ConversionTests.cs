@@ -1,3 +1,4 @@
+using App;
 using Core;
 using System.CommandLine;
 using System.Net;
@@ -104,7 +105,7 @@ public sealed class ConversionTests
             Console.SetOut(console);
             Console.SetError(console);
             Environment.SetEnvironmentVariable(CurrencyConverter.KeyVariable, key);
-            code = await ConsoleHost.RunAsync(["10", "USD", "EUR"], null, new InvocationConfiguration { Output = output, Error = error });
+            code = await Program.RunAsync(["10", "USD", "EUR"], null, new InvocationConfiguration { Output = output, Error = error });
         }
         finally
         {

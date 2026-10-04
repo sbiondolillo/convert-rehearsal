@@ -1,3 +1,4 @@
+using App;
 using Core;
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace Specs.Unit;
 
-public sealed class ConsoleHostTests
+public sealed class ProgramTests
 {
     private const string Key = "secretkey";
 
@@ -29,7 +30,7 @@ public sealed class ConsoleHostTests
             Console.SetOut(console);
             Console.SetError(console);
             Environment.SetEnvironmentVariable(CurrencyConverter.KeyVariable, Key);
-            int code = await ConsoleHost.RunAsync(
+            int code = await Program.RunAsync(
                 ["10", "USD", "EUR"],
                 services => services.ConfigureHttpClientDefaults(builder => builder.ConfigurePrimaryHttpMessageHandler(() => handler)),
                 new InvocationConfiguration { Output = output, Error = error });
