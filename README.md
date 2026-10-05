@@ -16,7 +16,7 @@ Build the solution:
 dotnet build --no-restore
 ```
 
-Run the tests:
+Run the build suite (the integration suite runs separately, with `dotnet run --no-restore --project tests/Integration`):
 
 ```sh
 dotnet test --no-restore
