@@ -16,6 +16,12 @@ Build the solution:
 dotnet build --no-restore
 ```
 
+Check that the code follows the format rules, as the `Format` step of CI does:
+
+```sh
+dotnet format --verify-no-changes --no-restore
+```
+
 Run the build suite (the integration suite runs separately, with `dotnet run --no-restore --project tests/Integration`):
 
 ```sh
