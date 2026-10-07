@@ -34,6 +34,25 @@ public sealed class ConvertCommandTests
         Assert.Equal(expected, output);
     }
 
+    private sealed class HtmlHandler : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadGateway) { Content = new StringContent("<html>Bad gateway</html>", Encoding.UTF8, "text/html") });
+    }
+
+    [Fact]
+    public async Task NonJsonAnswerFailsCleanly()
+    {
+        using var http = new HttpClient(new HtmlHandler());
+        var output = new StringWriter();
+        var error = new StringWriter();
+        RootCommand root = ConvertCommand.Create(http, _ => "secret-key");
+        int code = await root.Parse(["10", "USD", "EUR"]).InvokeAsync(new InvocationConfiguration { Output = output, Error = error }, TestContext.Current.CancellationToken);
+        Assert.Equal(1, code);
+        Assert.Empty(output.ToString());
+        Assert.DoesNotContain("secret-key", error.ToString());
+    }
+
     [Fact]
     public async Task AnswerWithoutErrorTypeFails()
     {

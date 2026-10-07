@@ -102,7 +102,7 @@ public sealed class RateClient(HttpClient http)
         {
             return new ConversionResult(0m, NoAnswer);
         }
-        catch (Exception ex) when (ex is JsonException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException or FormatException or NotSupportedException)
         {
             return new ConversionResult(0m, "The service gave an answer that the program does not understand.");
         }
