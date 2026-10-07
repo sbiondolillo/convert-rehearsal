@@ -34,7 +34,7 @@ public sealed class CurrencyConversionSteps : IDisposable
 
     [Given("the service answers the rate {word}")]
     public void GivenTheServiceAnswersTheRate(string rate) =>
-        _handler.Body = $$"""{"result":"success","base_code":"USD","target_code":"EUR","conversion_rate":{{rate}}}""";
+        _handler.Body = $$"""{"result":"success","conversion_rate":{{rate}}}""";
 
     [Given("the service answers with the error-type {string}")]
     public void GivenTheServiceAnswersWithTheErrorType(string errorType)

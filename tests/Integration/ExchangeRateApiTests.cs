@@ -52,6 +52,17 @@ public sealed class ExchangeRateApiTests
     }
 
     [Fact]
+    public async Task UsdJpyAnswersWithANumber()
+    {
+        (int status, JsonElement body) = await GetAsync(Key, "USD/JPY");
+        Assert.Equal(200, status);
+        Assert.Equal("success", body.GetProperty("result").GetString());
+        Assert.Equal("USD", body.GetProperty("base_code").GetString());
+        Assert.Equal("JPY", body.GetProperty("target_code").GetString());
+        Assert.True(body.GetProperty("conversion_rate").TryGetDecimal(out _));
+    }
+
+    [Fact]
     public async Task EurEurHasTheRateOne()
     {
         (int status, JsonElement body) = await GetAsync(Key, "EUR/EUR");
