@@ -1,6 +1,6 @@
-# Greeter
+# Currency converter
 
-A console program that prints a greeting for a name, and `Hello, world!` when it gets no name.
+A console program that takes an amount, a source currency code and a target currency code, and converts the amount at the rate of the day from ExchangeRate-API. It reads the key of the service from the environment variable `EXCHANGERATE_API_KEY`.
 
 ## Commands
 
@@ -28,8 +28,8 @@ Run the build suite (the integration suite runs separately, with `dotnet run --n
 dotnet test --no-restore
 ```
 
-Run the program with the name `Ada`:
+Run the program to convert 10 USD to EUR:
 
 ```sh
-dotnet run --project src/App -- Ada
+EXCHANGERATE_API_KEY=<key> dotnet run --project src/App -- 10 USD EUR
 ```
