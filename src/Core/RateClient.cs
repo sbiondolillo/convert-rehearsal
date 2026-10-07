@@ -44,7 +44,9 @@ public sealed class RateClient(HttpClient http)
         {
             using var document = JsonDocument.Parse(body);
             JsonElement root = document.RootElement;
-            if (root.ValueKind is not JsonValueKind.Object || !root.TryGetProperty("result", out JsonElement result))
+            if (root.ValueKind is not JsonValueKind.Object
+                || !root.TryGetProperty("result", out JsonElement result)
+                || result.ValueKind is not JsonValueKind.String)
             {
                 return RateAnswer.None;
             }

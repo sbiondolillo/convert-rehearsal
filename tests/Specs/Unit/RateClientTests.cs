@@ -40,6 +40,9 @@ public sealed class RateClientTests
     [InlineData("[]")]
     [InlineData("""{"result":"success"}""")]
     [InlineData("""{"result":"other"}""")]
+    [InlineData("""{"result":1}""")]
+    [InlineData("""{"result":{}}""")]
+    [InlineData("""{"result":null}""")]
     public void TakesAnAnswerThatIsNotUsableAsNoAnswer(string body) =>
         Assert.True(RateClient.Parse(body).NoAnswer);
 }
