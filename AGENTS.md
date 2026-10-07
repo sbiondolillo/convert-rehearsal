@@ -26,3 +26,7 @@ The build suite answers each call to a service with a canned answer from a stub 
 
 - A class that stores its constructor arguments uses a primary constructor. IDE0290.
 - A comparison with a constant is a pattern: `value is null`, `value is not null`, `exitCode is not 0`, `value is string text`. IDE0041, IDE0083, IDE0078, IDE0020 and IDE0019 flag most cases. Write `is not 0` in place of `!= 0` by hand, because no analyzer flags it.
+
+## Issues
+
+Before writing or revising an issue, read `docs/write-an-issue.md`, and file the issue only when every row of its `## Before you file` table passes.
