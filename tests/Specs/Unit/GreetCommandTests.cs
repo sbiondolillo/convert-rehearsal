@@ -9,7 +9,7 @@ public sealed class GreetCommandTests
     private static (int ExitCode, string Output) Run(params string[] arguments)
     {
         using var output = new StringWriter();
-        var exitCode = GreetCommand.Create().Parse(arguments).Invoke(new InvocationConfiguration { Output = output });
+        int exitCode = GreetCommand.Create().Parse(arguments).Invoke(new InvocationConfiguration { Output = output });
         return (exitCode, output.ToString().Trim());
     }
 
@@ -32,7 +32,7 @@ public sealed class GreetCommandTests
     [Fact]
     public void HelpListsShout()
     {
-        var (exitCode, output) = Run("--help");
+        (int exitCode, string output) = Run("--help");
         Assert.Equal(0, exitCode);
         Assert.Contains("--shout", output);
     }
