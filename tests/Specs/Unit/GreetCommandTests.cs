@@ -16,24 +16,18 @@ public sealed class GreetCommandTests
     [Theory]
     [InlineData("Hello, Ada!", "Ada")]
     [InlineData("Hello, world!")]
-    public void WithoutShoutTheGreetingKeepsItsCase(string expected, params string[] arguments)
-    {
-        Assert.Equal((0, expected), Run(arguments));
-    }
+    public void WithoutShoutTheGreetingKeepsItsCase(string expected, params string[] arguments) => Assert.Equal((0, expected), Run(arguments));
 
     [Theory]
     [InlineData("HELLO, ADA!", "--shout", "Ada")]
     [InlineData("HELLO, WORLD!", "--shout")]
-    public void ShoutPrintsTheGreetingInUpperCase(string expected, params string[] arguments)
-    {
-        Assert.Equal((0, expected), Run(arguments));
-    }
+    public void ShoutPrintsTheGreetingInUpperCase(string expected, params string[] arguments) => Assert.Equal((0, expected), Run(arguments));
 
     [Fact]
     public void HelpListsShout()
     {
         (int exitCode, string output) = Run("--help");
         Assert.Equal(0, exitCode);
-        Assert.Contains("--shout", output);
+        Assert.Contains("--shout", output, StringComparison.Ordinal);
     }
 }

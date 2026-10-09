@@ -5,5 +5,5 @@ public static class Greeting
 {
     private const string Template = "Hello, {name}!";
 
-    public static string Format(string name) => Template.Replace("{name}", name);
+    public static string Format(string name) => Template.Replace("{name}", name, StringComparison.Ordinal);
 }
