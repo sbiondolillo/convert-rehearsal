@@ -24,7 +24,7 @@ public sealed class ConsoleProgramSteps
     public void ThenTheConsoleProgramWritesToStandardOutput(string expected) => Assert.Equal(expected, _output.Trim());
 
     [Then("the standard output lists the option {string}")]
-    public void ThenTheStandardOutputListsTheOption(string option) => Assert.Contains(option, _output);
+    public void ThenTheStandardOutputListsTheOption(string option) => Assert.Contains(option, _output, StringComparison.Ordinal);
 
     [Then("the console program exits with the code {int}")]
     public void ThenTheConsoleProgramExitsWithTheCode(int expected) => Assert.Equal(expected, _exitCode);
